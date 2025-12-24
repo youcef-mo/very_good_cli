@@ -1,8 +1,10 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
+import 'package:{{project_name.snakeCase()}}/authentication/models/models.dart';
 import 'package:{{project_name.snakeCase()}}/authentication/repository/authentication_repository.dart';
 import 'package:bloc/bloc.dart';
 import 'package:equatable/equatable.dart';
+import 'package:formz/formz.dart';
 
 part 'login_bloc.dart';
 part 'login_event.dart';
@@ -15,7 +17,7 @@ class LoginForm extends StatelessWidget {
   Widget build(BuildContext context) {
     return BlocListener<LoginBloc, LoginState>(
       listener: (context, state) {
-        if (state.status == LoginStatus.failure) {
+        if (state.status == FormzSubmissionStatus.failure) {
           ScaffoldMessenger.of(context)
             ..hideCurrentSnackBar()
             ..showSnackBar(
@@ -33,6 +35,8 @@ class LoginForm extends StatelessWidget {
           _PasswordInput(),
           const SizedBox(height: 24),
           _LoginButton(),
+          const SizedBox(height: 16),
+          _AnonymousLoginButton(),
         ],
       ),
     );
@@ -50,7 +54,9 @@ class _EmailInput extends StatelessWidget {
               context.read<LoginBloc>().add(LoginEmailChanged(email)),
           decoration: InputDecoration(
             labelText: 'Email',
-            errorText: state.email.isEmpty ? null : null,
+            errorText: state.email.displayError != null
+                ? 'Invalid email'
+                : null,
             border: const OutlineInputBorder(),
           ),
         );
@@ -69,9 +75,12 @@ class _PasswordInput extends StatelessWidget {
           onChanged: (password) =>
               context.read<LoginBloc>().add(LoginPasswordChanged(password)),
           obscureText: true,
-          decoration: const InputDecoration(
+          decoration: InputDecoration(
             labelText: 'Password',
-            border: OutlineInputBorder(),
+            errorText: state.password.displayError != null
+                ? 'Password must be at least 8 characters with letters and numbers'
+                : null,
+            border: const OutlineInputBorder(),
           ),
         );
       },
@@ -84,13 +93,39 @@ class _LoginButton extends StatelessWidget {
   Widget build(BuildContext context) {
     return BlocBuilder<LoginBloc, LoginState>(
       builder: (context, state) {
-        return state.status == LoginStatus.loading
+        return state.status == FormzSubmissionStatus.inProgress
             ? const CircularProgressIndicator()
-            : ElevatedButton(
-                onPressed: state.isValid
-                    ? () => context.read<LoginBloc>().add(const LoginSubmitted())
-                    : null,
-                child: const Text('Login'),
+            : SizedBox(
+                width: double.infinity,
+                child: ElevatedButton(
+                  onPressed: state.isValid
+                      ? () =>
+                          context.read<LoginBloc>().add(const LoginSubmitted())
+                      : null,
+                  child: const Text('Login'),
+                ),
+              );
+      },
+    );
+  }
+}
+
+class _AnonymousLoginButton extends StatelessWidget {
+  @override
+  Widget build(BuildContext context) {
+    return BlocBuilder<LoginBloc, LoginState>(
+      builder: (context, state) {
+        return state.status == FormzSubmissionStatus.inProgress
+            ? const SizedBox.shrink()
+            : SizedBox(
+                width: double.infinity,
+                child: OutlinedButton.icon(
+                  onPressed: () => context.read<LoginBloc>().add(
+                        const LoginAnonymously(),
+                      ),
+                  icon: const Icon(Icons.person_outline),
+                  label: const Text('Continue Anonymously'),
+                ),
               );
       },
     );

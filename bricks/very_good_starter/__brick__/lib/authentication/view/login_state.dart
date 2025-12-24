@@ -1,36 +1,36 @@
 part of 'login_form.dart';
 
-enum LoginStatus { initial, loading, success, failure }
-
 final class LoginState extends Equatable {
   const LoginState({
-    this.status = LoginStatus.initial,
-    this.email = '',
-    this.password = '',
+    this.status = FormzSubmissionStatus.initial,
+    this.email = const Email.pure(),
+    this.password = const Password.pure(),
+    this.isValid = false,
     this.errorMessage,
   });
 
-  final LoginStatus status;
-  final String email;
-  final String password;
+  final FormzSubmissionStatus status;
+  final Email email;
+  final Password password;
+  final bool isValid;
   final String? errorMessage;
 
-  bool get isValid => email.isNotEmpty && password.isNotEmpty;
-
   LoginState copyWith({
-    LoginStatus? status,
-    String? email,
-    String? password,
+    FormzSubmissionStatus? status,
+    Email? email,
+    Password? password,
+    bool? isValid,
     String? errorMessage,
   }) {
     return LoginState(
       status: status ?? this.status,
       email: email ?? this.email,
       password: password ?? this.password,
+      isValid: isValid ?? this.isValid,
       errorMessage: errorMessage ?? this.errorMessage,
     );
   }
 
   @override
-  List<Object?> get props => [status, email, password, errorMessage];
+  List<Object?> get props => [status, email, password, isValid, errorMessage];
 }

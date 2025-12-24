@@ -4,7 +4,9 @@
 
 ## Features
 
-- ✅ **Authentication**: Firebase Auth integration with email/password
+- ✅ **Authentication**: Firebase Auth OR Supabase Auth with email/password
+- ✅ **Anonymous Login**: Allow users to try your app without signing up
+- ✅ **Form Validation**: Using formz for type-safe, reusable form validation
 - ✅ **Onboarding**: Multi-step onboarding flow
 - ✅ **State Management**: Bloc pattern for predictable state management
 - ✅ **Repository Pattern**: Clean architecture with separation of concerns
@@ -17,7 +19,7 @@
 ### Prerequisites
 
 - Flutter SDK ^3.9.0
-- Firebase project configured
+- **Choose one**: Firebase project OR Supabase project
 
 ### Setup
 
@@ -26,11 +28,21 @@
    flutter pub get
    ```
 
-2. Configure Firebase:
+2. **Option A: Configure Firebase**
    - Add `google-services.json` for Android in `android/app/`
    - Add `GoogleService-Info.plist` for iOS in `ios/Runner/`
+   - In `lib/main.dart`, ensure `authBackend = AuthBackend.firebase`
 
-3. Run the app:
+3. **Option B: Configure Supabase**
+   - Create a Supabase project at https://supabase.com
+   - Get your project URL and anon key
+   - In `lib/main.dart`, set `authBackend = AuthBackend.supabase`
+   - Run with environment variables:
+     ```bash
+     flutter run --dart-define=SUPABASE_URL=your_url --dart-define=SUPABASE_ANON_KEY=your_key
+     ```
+
+4. Run the app:
    ```bash
    flutter run
    ```
@@ -42,6 +54,7 @@ lib/
 ├── app/                    # App widget and routing
 ├── authentication/         # Authentication feature
 │   ├── bloc/              # Authentication Bloc
+│   ├── models/            # Formz validation models
 │   ├── repository/        # Authentication Repository
 │   └── view/              # Login/Signup UI
 ├── onboarding/            # Onboarding feature
@@ -56,8 +69,33 @@ lib/
 This project follows the **Bloc pattern** with **Repository pattern** for data management:
 
 - **Bloc**: Business Logic Component for state management
-- **Repository**: Abstraction layer for data sources
+- **Repository**: Abstraction layer for data sources (supports Firebase & Supabase)
+- **Formz**: Type-safe form validation
 - **View**: UI layer that reacts to state changes
+
+## Authentication Backends
+
+### Firebase Authentication
+- Email/Password login
+- Anonymous authentication
+- Well-tested and production-ready
+
+### Supabase Authentication
+- Email/Password login
+- Anonymous authentication
+- Open-source alternative with PostgreSQL database
+- Built-in Row Level Security (RLS)
+
+Switch between backends by changing `authBackend` in `lib/main.dart`.
+
+## Form Validation
+
+Forms use the **formz** package for:
+- Type-safe validation logic
+- Reusable validators
+- Automatic form status tracking
+- Email validation with regex
+- Password strength validation (8+ chars, letters + numbers)
 
 ## Testing
 
