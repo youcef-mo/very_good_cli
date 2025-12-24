@@ -12,6 +12,10 @@ bricks=(
     very_good_wear_app
 )
 
+# Generate bundle from local brick
+echo "bundling very_good_starter (local brick)..."
+mason bundle bricks/very_good_starter --type dart --output-dir "lib/src/commands/create/templates/very_good_starter/"
+
 for brick in "${bricks[@]}"
 do
     echo "bundling $brick..."

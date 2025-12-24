@@ -1,0 +1,26 @@
+name: very_good_starter
+description: A Very Good Flutter Starter with Auth, Onboarding, Subscriptions, and Notifications
+version: 0.1.0+1
+publish_to: none
+
+environment:
+  mason: ">=0.1.0-dev <0.1.0"
+
+vars:
+  project_name:
+    type: string
+    description: The name of the project
+    default: my_app
+    prompt: What is your project name?
+
+  org_name:
+    type: string
+    description: The organization name
+    default: com.example
+    prompt: What is your organization name?
+
+  description:
+    type: string
+    description: The project description
+    default: A Very Good Flutter Starter Project
+    prompt: What is your project description?
